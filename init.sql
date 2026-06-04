@@ -1,4 +1,4 @@
-CREATE TABLE users (
+CREATE TABLE IF NOT EXISTS users (
     id SERIAL PRIMARY KEY,
     username VARCHAR(100) UNIQUE NOT NULL,
     password_hash TEXT NOT NULL,
@@ -6,7 +6,7 @@ CREATE TABLE users (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE TABLE conversations (
+CREATE TABLE IF NOT EXISTS conversations (
     id SERIAL PRIMARY KEY,
     user_id INTEGER REFERENCES users(id),
     question TEXT,
@@ -16,7 +16,7 @@ CREATE TABLE conversations (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE TABLE review_queue (
+CREATE TABLE IF NOT EXISTS review_queue (
     id SERIAL PRIMARY KEY,
     question TEXT,
     ai_answer TEXT,
@@ -27,10 +27,18 @@ CREATE TABLE review_queue (
     reviewed_by INTEGER
 );
 
-CREATE TABLE approved_answers (
+CREATE TABLE IF NOT EXISTS approved_answers (
     id SERIAL PRIMARY KEY,
     question_pattern TEXT,
     answer TEXT,
     category VARCHAR(100),
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
+
+INSERT INTO users (username,password_hash,role)
+VALUES ('admin','admin123','admin')
+ON CONFLICT (username) DO NOTHING;
+
+INSERT INTO users (username,password_hash,role)
+VALUES ('user1','user123','user')
+ON CONFLICT (username) DO NOTHING;
